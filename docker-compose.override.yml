@@ -1,0 +1,16 @@
+# docker-compose.override.yml
+version: "3.9"
+services:
+  db-init:
+    image: postgres:16
+    network_mode: host
+    environment:
+      PGHOST: 127.0.0.1
+      PGPORT: "5432"
+      PGUSER: byk
+      PGPASSWORD: "01234"
+      PGDATABASE: byk
+    volumes:
+      - ./sql:/sql:ro
+    entrypoint: ["/bin/bash", "/sql/_init.sh"]
+    restart: "no"
