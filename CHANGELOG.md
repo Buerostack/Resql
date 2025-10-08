@@ -8,15 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial project setup
-- Core SQL-to-REST endpoint conversion functionality
-- Multi-datasource routing support
-- Spring Security integration
-- OpenTelemetry instrumentation
-- PostgreSQL and H2 database support
-- Swagger/OpenAPI documentation
-- Docker and Docker Compose configuration
-- Maven build configuration
+- Comprehensive documentation following ADR-001 software publishing rules
+  - Enhanced README.md with origin and ownership information
+  - CHANGELOG.md for version history
+  - CONTRIBUTING.md with development guidelines
+  - Architecture documentation (overview, data-flow, file-structure)
+  - How-to guides (create-your-first-query, configure-datasource, deploy-docker)
+  - Reference documentation (rest-api, sql-syntax, configuration)
+  - Runnable examples (basic-crud with test scripts)
+- Documentation deduplication and cross-referencing
+  - Removed ~172 lines of duplicate content
+  - Added cross-references between related documentation
+  - Established single source of truth for each concept
+
+### Changed
+- Updated README.md with proper attribution to Bürokratt and original repository
+- Simplified component descriptions in file-structure.md with references to overview.md
+- Condensed HikariCP configuration examples with references to configuration.md
 
 ## [0.0.1-SNAPSHOT] - 2025-10-08
 
