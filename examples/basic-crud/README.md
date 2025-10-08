@@ -4,8 +4,8 @@ This example demonstrates basic Create, Read, Update, Delete (CRUD) operations u
 
 ## Prerequisites
 
-- Resql running (see main README.md)
-- PostgreSQL database
+- Resql running (see main [README.md](../../README.md))
+- PostgreSQL database (see [Configure DataSource](../../docs/how-to/configure-datasource.md))
 - cURL or HTTPie installed
 
 ## Setup

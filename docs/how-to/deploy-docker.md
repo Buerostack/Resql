@@ -549,6 +549,7 @@ docker rmi resql:latest
 
 ## Next Steps
 
-- [Configure DataSource](configure-datasource.md)
-- [Create Your First Query](create-your-first-query.md)
-- [Production Configuration](../reference/configuration.md)
+- [Configure DataSource](configure-datasource.md) - Database configuration
+- [Create Your First Query](create-your-first-query.md) - Write your first SQL query
+- [Configuration Reference](../reference/configuration.md) - Complete configuration options
+- [Architecture Overview](../architecture/overview.md) - System design and components

@@ -211,67 +211,32 @@ Resql/
 
 ## Key File Descriptions
 
+For detailed information about component responsibilities and interactions, see [Architecture Overview](overview.md).
+
 ### Entry Point
 
-**SqlmsApplication.java**
-- Spring Boot main class
-- Excludes default datasource auto-configuration
-- Servlet initializer for WAR deployment
+**SqlmsApplication.java** - Spring Boot main class and WAR deployment initializer
 
 ### Controllers
 
-**QueryController.java** (Lines: 75)
-- Maps `/{project}/**` to query execution
-- Supports GET, POST, and batch operations
-- Extracts query name from URL path
-- Parameter binding from request body/query
-
-**DataSourceController.java**
-- Lists configured datasources
-- Health check per datasource
-- Connection pool statistics
-
-**HeartBeatController.java**
-- `/heartbeat` endpoint
-- Application health status
-- Build version information
+**QueryController.java** - Main REST endpoint for query execution (GET/POST/batch)
+**DataSourceController.java** - DataSource management and health checks
+**HeartBeatController.java** - Application health and version endpoint
 
 ### Services
 
-**QueryService.java** (Lines: 57)
-- Core business logic
-- Loads SQL queries
-- Sets datasource context
-- Executes queries with parameters
-
-**SavedQueryService.java**
-- File system scanning
-- Query caching
-- Metadata extraction
-- Path-to-endpoint mapping
+**QueryService.java** - Core query execution orchestration
+**SavedQueryService.java** - SQL file loading, caching, and path mapping
 
 ### DataSource Management
 
-**RoutingDataSource.java**
-- Extends AbstractRoutingDataSource
-- Routes to datasource based on ThreadLocal
-- Enables multi-tenancy
-
-**DataSourceContextHolder.java**
-- ThreadLocal storage
-- Set datasource for current request
-- Cleared after request completion
-
-**ResqlJdbcTemplate.java**
-- Custom JDBC template
-- Named parameter support (`:paramName`)
-- Automatic result mapping
-- Handles SELECT and DML
+**RoutingDataSource.java** - Dynamic datasource routing via ThreadLocal
+**DataSourceContextHolder.java** - Thread-local datasource context
+**ResqlJdbcTemplate.java** - Custom JDBC template with named parameter support
 
 ### Configuration
 
-**DataSourceConfiguration.java**
-- Creates datasource beans
+**DataSourceConfiguration.java** - Datasource bean creation
 - HikariCP pool configuration
 - Transaction manager setup
 - Multiple datasource support

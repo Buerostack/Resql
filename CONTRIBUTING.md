@@ -13,11 +13,7 @@ Thank you for your interest in contributing to Resql! This document provides gui
 
 ### Prerequisites
 
-- Java 17 or higher
-- Maven 3.6+
-- Git
-- PostgreSQL (optional, H2 works for testing)
-- Docker (optional)
+See [Prerequisites](README.md#prerequisites) in the main README for required software and tools.
 
 ### Development Setup
 
@@ -27,20 +23,12 @@ git clone https://github.com/your-username/Resql.git
 cd Resql
 ```
 
-2. Build the project:
+2. Build and run tests:
 ```bash
 ./mvnw clean install
 ```
 
-3. Run tests:
-```bash
-./mvnw test
-```
-
-4. Run locally:
-```bash
-./mvnw spring-boot:run
-```
+For detailed installation and setup instructions, see the [Installation](README.md#installation) section in the main README.
 
 ## Development Workflow
 

@@ -133,29 +133,22 @@ Call with:
 
 ### Optional Parameters
 
-To support optional parameters, use SQL conditionals:
-
-```sql
-SELECT * FROM products
-WHERE 1=1
-  AND (:category IS NULL OR category = :category)
-  AND (:minPrice IS NULL OR price >= :minPrice);
-```
-
-Call with:
-```json
-{
-  "category": "electronics",
-  "minPrice": null
-}
-```
+Resql supports optional parameters using SQL conditionals. For details on this and other advanced patterns like pagination, full-text search, and array parameters, see the [SQL Syntax Reference](../reference/sql-syntax.md).
 
 ## Common Patterns
 
-### Pagination
+For comprehensive SQL patterns including:
+- Optional parameters
+- Pagination
+- Search with LIKE
+- Array and JSON parameters
+- Upsert operations
+
+See the [SQL Syntax Reference](../reference/sql-syntax.md).
+
+### Basic Pagination Example
 
 ```sql
--- sql/api/GET/products/list.sql
 SELECT * FROM products
 ORDER BY created_at DESC
 LIMIT :limit OFFSET :offset;
@@ -168,33 +161,6 @@ LIMIT :limit OFFSET :offset;
 }
 ```
 
-### Search with LIKE
-
-```sql
-SELECT * FROM users
-WHERE name ILIKE :searchTerm || '%';
-```
-
-```json
-{
-  "searchTerm": "John"
-}
-```
-
-### IN Clause
-
-**Note:** Currently requires workarounds. Use array parameters:
-
-```sql
-SELECT * FROM users
-WHERE id = ANY(CAST(:ids AS INTEGER[]));
-```
-
-```json
-{
-  "ids": "{1,2,3}"
-}
-```
 
 ## GET vs POST Queries
 
@@ -234,4 +200,6 @@ curl -X POST http://localhost:8080/api/products/search \
 
 - [Configure DataSource](configure-datasource.md) - Add more databases
 - [Deploy with Docker](deploy-docker.md) - Production deployment
-- [Advanced Queries](../reference/sql-syntax.md) - Complex SQL patterns
+- [SQL Syntax Reference](../reference/sql-syntax.md) - Complete SQL patterns and examples
+- [REST API Reference](../reference/rest-api.md) - API endpoint documentation
+- [Basic CRUD Example](../../examples/basic-crud/) - Working example with test script

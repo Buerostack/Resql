@@ -185,49 +185,21 @@ curl -X POST http://localhost:8080/api/query/users/list \
 
 ## Connection Pool Configuration
 
-### HikariCP Settings
+Resql uses HikariCP for connection pooling. You can configure pool settings for each datasource:
 
 ```yaml
 datasource:
   configs:
-    - name: high-traffic
+    - name: primary
       url: jdbc:postgresql://db:5432/app
       username: user
       password: pass
       hikari:
-        maximum-pool-size: 20          # Max connections
-        minimum-idle: 5                 # Always keep 5 idle
-        connection-timeout: 30000       # 30 seconds
-        idle-timeout: 600000            # 10 minutes
-        max-lifetime: 1800000           # 30 minutes
-        auto-commit: true
-        connection-test-query: SELECT 1
-        pool-name: ResqlPool-HighTraffic
+        maximum-pool-size: 20
+        minimum-idle: 5
 ```
 
-### Performance Tuning
-
-**Low Traffic:**
-```yaml
-hikari:
-  maximum-pool-size: 5
-  minimum-idle: 1
-```
-
-**High Traffic:**
-```yaml
-hikari:
-  maximum-pool-size: 50
-  minimum-idle: 10
-```
-
-**Batch Processing:**
-```yaml
-hikari:
-  maximum-pool-size: 20
-  minimum-idle: 5
-  connection-timeout: 60000
-```
+For complete HikariCP configuration options and performance tuning recommendations, see the [Configuration Reference](../reference/configuration.md#connection-pool-hikaricp).
 
 ## Docker Configuration
 
@@ -395,6 +367,7 @@ SELECT 1 as test;
 
 ## Next Steps
 
-- [Create Your First Query](create-your-first-query.md)
-- [Deploy with Docker](deploy-docker.md)
-- [Configuration Reference](../reference/configuration.md)
+- [Create Your First Query](create-your-first-query.md) - Get started with SQL queries
+- [Deploy with Docker](deploy-docker.md) - Docker deployment guide
+- [Configuration Reference](../reference/configuration.md) - Complete configuration options
+- [Architecture Overview](../architecture/overview.md) - Understanding datasource routing

@@ -113,31 +113,9 @@ Spring Security setup.
 
 ## Data Flow
 
-### Request Processing Flow
+Request processing follows a layered architecture pattern: Controller → Service → Data Access → Database.
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant QC as QueryController
-    participant QS as QueryService
-    participant SQS as SavedQueryService
-    participant RT as ResqlJdbcTemplate
-    participant DS as DataSource
-
-    C->>QC: POST /{project}/users/find-by-email
-    QC->>QC: Parse URL to extract query name
-    QC->>QS: execute(project, "POST", "/users/find-by-email", params)
-    QS->>SQS: get(project, "POST", "/users/find-by-email")
-    SQS-->>QS: SavedQuery{sql, datasource}
-    QS->>QS: setDatabaseContext(datasource)
-    QS->>RT: queryOrExecute(sql, params)
-    RT->>RT: Parse named parameters
-    RT->>DS: Execute SQL with bound params
-    DS-->>RT: ResultSet
-    RT-->>QS: List<Map<String,Object>>
-    QS-->>QC: Results
-    QC-->>C: JSON Response
-```
+For detailed request flow diagrams, processing phases, parameter binding, and tracing information, see [Data Flow Documentation](data-flow.md).
 
 ## Technology Stack
 
