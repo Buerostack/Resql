@@ -2,7 +2,13 @@
 
 A lightweight, generic REST API microservice that transforms SQL files into HTTP endpoints with zero boilerplate.
 
-**Maintained by:** Architecture Team
+## Origin
+
+Resql was originally developed at **Bürokratt** starting in August 2022 as part of the Bükstack component ecosystem.
+
+**Original Repository:** https://github.com/buerokratt/Resql
+**Maintained by:** Rainer Türner (starting October 2025)
+**Purpose:** To have a clean, well-documented version of Resql to work on independently
 **Status:** Draft (v0.0.1-SNAPSHOT)
 
 ## About
@@ -136,4 +142,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines, code standard
 
 ## License
 
-See [LICENSE](LICENSE) for license information.
+This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
