@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README.md with proper attribution to Bürokratt and original repository
 - Simplified component descriptions in file-structure.md with references to overview.md
 - Condensed HikariCP configuration examples with references to configuration.md
+- Added OpenAPI 3.0 specification (docs/reference/openapi.yaml) per ADR-001 Rule 004
+  - Complete REST API documentation in industry-standard format
+  - Enables automated client generation and contract validation
 
 ## [0.0.1-SNAPSHOT] - 2025-10-08
 

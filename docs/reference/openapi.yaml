@@ -1,0 +1,406 @@
+openapi: 3.0.3
+info:
+  title: Resql API
+  description: |
+    REST API for executing SQL queries from `.sql` files as HTTP endpoints.
+
+    Resql automatically converts SQL files into REST endpoints with automatic parameter binding,
+    multi-datasource routing, and built-in security.
+  version: 0.0.1-SNAPSHOT
+  contact:
+    name: Rainer Türner
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Query Execution
+    description: Execute SQL queries via REST endpoints
+  - name: Health
+    description: Health check and monitoring endpoints
+  - name: DataSource Management
+    description: DataSource configuration and status
+
+paths:
+  /{project}/{query-path}:
+    post:
+      tags:
+        - Query Execution
+      summary: Execute SQL query (POST)
+      description: |
+        Execute a saved SQL query using POST method with JSON parameters.
+        The query path corresponds to the SQL file location.
+      operationId: executeQueryPost
+      parameters:
+        - name: project
+          in: path
+          required: true
+          description: Project namespace (corresponds to directory in sql/)
+          schema:
+            type: string
+            example: api
+        - name: query-path
+          in: path
+          required: true
+          description: Path to the SQL query (corresponds to file path in sql/{project}/POST/)
+          schema:
+            type: string
+            example: users/find-by-email
+        - name: X-Datasource
+          in: header
+          required: false
+          description: Override default datasource for this request
+          schema:
+            type: string
+            example: secondary
+      requestBody:
+        description: Query parameters as JSON key-value pairs
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            examples:
+              simple:
+                summary: Simple parameter
+                value:
+                  email: user@example.com
+              multiple:
+                summary: Multiple parameters
+                value:
+                  email: user@example.com
+                  status: active
+      responses:
+        '200':
+          description: Query executed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+              examples:
+                singleResult:
+                  summary: Single row result
+                  value:
+                    - id: 123
+                      name: John Doe
+                      email: john@example.com
+                multipleResults:
+                  summary: Multiple rows
+                  value:
+                    - id: 123
+                      name: John Doe
+                    - id: 456
+                      name: Jane Smith
+                emptyResult:
+                  summary: No results
+                  value: []
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Query file not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Query execution error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - basicAuth: []
+
+    get:
+      tags:
+        - Query Execution
+      summary: Execute SQL query (GET)
+      description: |
+        Execute a saved SQL query using GET method with query parameters.
+        Best for simple lookups with few parameters.
+      operationId: executeQueryGet
+      parameters:
+        - name: project
+          in: path
+          required: true
+          description: Project namespace
+          schema:
+            type: string
+            example: api
+        - name: query-path
+          in: path
+          required: true
+          description: Path to the SQL query
+          schema:
+            type: string
+            example: products/get-by-id
+        - name: X-Datasource
+          in: header
+          required: false
+          description: Override default datasource
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Query executed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Query not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Query execution error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - basicAuth: []
+
+  /{project}/{query-name}/batch:
+    post:
+      tags:
+        - Query Execution
+      summary: Execute query in batch mode
+      description: Execute the same query multiple times with different parameter sets
+      operationId: executeBatch
+      parameters:
+        - name: project
+          in: path
+          required: true
+          description: Project namespace
+          schema:
+            type: string
+            example: api
+        - name: query-name
+          in: path
+          required: true
+          description: Query name
+          schema:
+            type: string
+            example: users/find-by-email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+            example:
+              queries:
+                - email: user1@example.com
+                - email: user2@example.com
+                - email: user3@example.com
+      responses:
+        '200':
+          description: Batch execution completed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+              example:
+                - - id: 1
+                    name: User One
+                - - id: 2
+                    name: User Two
+                - - id: 3
+                    name: User Three
+        '400':
+          description: Invalid batch request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - basicAuth: []
+
+  /heartbeat:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns application health status and version information
+      operationId: heartbeat
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeartBeat'
+              example:
+                status: UP
+                version: 0.0.1-SNAPSHOT
+                timestamp: '2024-01-15T10:30:00Z'
+                uptime: 2h 15m 30s
+
+  /datasources:
+    get:
+      tags:
+        - DataSource Management
+      summary: List configured datasources
+      description: Returns list of all configured datasources with their status
+      operationId: listDataSources
+      responses:
+        '200':
+          description: DataSource list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataSource'
+              example:
+                - name: primary
+                  status: UP
+                  url: jdbc:postgresql://localhost:5432/mydb
+                  driverClass: org.postgresql.Driver
+                  activeConnections: 3
+                  idleConnections: 7
+                  totalConnections: 10
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - basicAuth: []
+
+components:
+  schemas:
+    BatchRequest:
+      type: object
+      required:
+        - queries
+      properties:
+        queries:
+          type: array
+          description: Array of parameter sets for batch execution
+          items:
+            type: object
+            additionalProperties: true
+          minItems: 1
+
+    HeartBeat:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [UP, DOWN]
+          description: Application health status
+        version:
+          type: string
+          description: Application version
+        timestamp:
+          type: string
+          format: date-time
+          description: Current server timestamp
+        uptime:
+          type: string
+          description: Application uptime
+
+    DataSource:
+      type: object
+      properties:
+        name:
+          type: string
+          description: DataSource identifier
+        status:
+          type: string
+          enum: [UP, DOWN]
+          description: DataSource health status
+        url:
+          type: string
+          description: JDBC connection URL
+        driverClass:
+          type: string
+          description: JDBC driver class name
+        activeConnections:
+          type: integer
+          description: Number of active connections
+        idleConnections:
+          type: integer
+          description: Number of idle connections
+        totalConnections:
+          type: integer
+          description: Total connections in pool
+
+    Error:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+        status:
+          type: integer
+          description: HTTP status code
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Error message
+        path:
+          type: string
+          description: Request path that caused the error
+
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication
+
+security:
+  - basicAuth: []

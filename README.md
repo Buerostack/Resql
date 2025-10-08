@@ -132,9 +132,9 @@ curl -X POST http://localhost:8080/api/query/my-query \
 
 ### API Documentation
 
-Once running, visit:
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **OpenAPI Spec**: http://localhost:8080/v3/api-docs
+- **OpenAPI Specification**: [docs/reference/openapi.yaml](docs/reference/openapi.yaml)
+- **Swagger UI**: http://localhost:8080/swagger-ui.html (when running)
+- **OpenAPI Spec** (runtime): http://localhost:8080/v3/api-docs
 
 ## Contributing
 
